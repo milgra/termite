@@ -48,7 +48,6 @@ com_sources = ['src/termite/ant.c',
 	       'src/termite/levels.c',
 	       'src/termite/main.c',
 	       'src/termite/particle.c',
-	       'src/termite/pixeltext.c',
 	       'src/termite/scene.c',
 	       'src/termite/ui.c',
 	       'src/termite/voxelutil.c',
@@ -76,6 +75,7 @@ com_sources = ['src/termite/ant.c',
 	       'src/modules/voxel/settings.c',
 	       'src/modules/voxel/voxel.c',
 	       'src/modules/voxel/bus.c',
+	       'src/modules/voxel/pixeltext.c',
 
 	       'src/modules/utils/str_util.c']
 
