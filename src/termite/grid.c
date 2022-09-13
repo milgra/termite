@@ -1,3 +1,4 @@
+/* World grid */
 
 #ifndef grid_h
 #define grid_h
@@ -9,7 +10,6 @@
 
 typedef struct _block_t
 {
-
     char   wall;
     vec_t* ants;
     vec_t* food;
@@ -18,7 +18,6 @@ typedef struct _block_t
 
 typedef struct _grid_t
 {
-
     uint32_t rows;
     uint32_t cols;
 
@@ -35,7 +34,6 @@ typedef struct _grid_t
     vec_t* blocks;
     vec_t* pathnodes;
     map_t* pathcache;
-
 } grid_t;
 
 block_t* block_alloc(void);
@@ -68,7 +66,6 @@ extern grid_t grid;
 
 void block_dealloc(void* data)
 {
-
     block_t* block = data;
 
     vec_reset(block->ants);
@@ -83,7 +80,6 @@ void block_dealloc(void* data)
 
 block_t* block_alloc()
 {
-
     block_t* block = CAL(sizeof(block_t), block_dealloc, NULL);
 
     block->ants = VNEW();
@@ -96,7 +92,6 @@ grid_t grid;
 
 void grid_init()
 {
-
     grid.rows = 0;
     grid.cols = 0;
 
@@ -116,7 +111,6 @@ void grid_free()
 
 void grid_reset()
 {
-
     for (int index = 0;
 	 index < grid.ants->length;
 	 index++)
@@ -144,7 +138,6 @@ void grid_reset()
 
 void grid_resetnodes()
 {
-
     for (int index = 0;
 	 index < grid.pathnodes->length;
 	 index++)
@@ -162,7 +155,6 @@ void grid_resetnodes()
 
 block_t* grid_getblock(v2_t pos)
 {
-
     float col = pos.x / defaults.grid_size;
     float row = pos.y / defaults.grid_size;
 
@@ -180,7 +172,6 @@ block_t* grid_getblock(v2_t pos)
 
 void grid_addant(void* data)
 {
-
     ant_t*   ant   = data;
     block_t* block = grid_getblock(ant->pos);
 
@@ -199,7 +190,6 @@ void grid_addant(void* data)
 
 void grid_removeant(void* data)
 {
-
     ant_t*   ant   = data;
     block_t* block = grid_getblock(ant->pos);
 
@@ -217,7 +207,6 @@ void grid_removeant(void* data)
 
 void grid_relocate_ant(void* data)
 {
-
     ant_t*   ant   = data;
     block_t* block = grid_getblock(ant->pos);
 
@@ -235,7 +224,6 @@ void grid_relocate_ant(void* data)
 
 void grid_addfood(void* data)
 {
-
     food_t*  food  = data;
     block_t* block = grid_getblock(food->pos);
 
@@ -277,7 +265,6 @@ void grid_removefood(void* data)
 
 vec_t* grid_findpath(v2_t s, v2_t e)
 {
-
     grid_resetnodes();
 
     int startX = (int) (s.x / defaults.grid_size);
@@ -304,7 +291,6 @@ vec_t* grid_findpath(v2_t s, v2_t e)
 
     if (result == NULL)
     {
-
 	// create result path
 
 	result = VNEW();
@@ -317,7 +303,6 @@ vec_t* grid_findpath(v2_t s, v2_t e)
 
 	if (haswall == 1)
 	{
-
 	    vec_t* path = VNEW();
 
 	    grid2d_find(
@@ -330,7 +315,6 @@ vec_t* grid_findpath(v2_t s, v2_t e)
 
 	    if (path->length > 0)
 	    {
-
 		for (int index = 1;
 		     index < path->length - 1;
 		     index++)
@@ -360,7 +344,6 @@ vec_t* grid_findpath(v2_t s, v2_t e)
 	}
 	else
 	{
-
 	    v2_t* endpoint = HEAP(((v2_t){e.x, e.y}));
 	    VADD(result, endpoint);
 
@@ -375,7 +358,6 @@ vec_t* grid_findpath(v2_t s, v2_t e)
 
 void* grid_searchqueen(void* antp, void** queen)
 {
-
     ant_t* ant = antp;
 
     vec_t* finalpath  = NULL;
@@ -386,13 +368,11 @@ void* grid_searchqueen(void* antp, void** queen)
 	 index < grid.ants->length;
 	 index++)
     {
-
 	ant_t* onequeen = grid.ants->data[index];
 
 	if (onequeen->color == ant->color &&
 	    onequeen->state == ST_QUEEN)
 	{
-
 	    vec_t* path = grid_findpath(ant->pos, onequeen->pos);
 
 	    float newdist = fabs(onequeen->pos.x - ant->pos.x) + fabs(onequeen->pos.y - ant->pos.y);
@@ -417,7 +397,6 @@ void* grid_searchqueen(void* antp, void** queen)
 
 void* grid_searchenemy(v2_t pos, void* antp)
 {
-
     int col = (int) (pos.x / defaults.grid_size);
     int row = (int) (pos.y / defaults.grid_size);
 
@@ -516,7 +495,6 @@ void* grid_searchenemy(v2_t pos, void* antp)
 
 void* grid_searchfood(v2_t pos, void* antp)
 {
-
     int col = (int) (pos.x / defaults.grid_size);
     int row = (int) (pos.y / defaults.grid_size);
 
@@ -612,7 +590,6 @@ void* grid_searchfood(v2_t pos, void* antp)
 
 void grid_showcontent()
 {
-
     for (int r = 0;
 	 r < grid.rows;
 	 r++)

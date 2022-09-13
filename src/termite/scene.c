@@ -1,3 +1,5 @@
+/* Scene handler */
+
 #ifndef scene_h
 #define scene_h
 
@@ -7,25 +9,20 @@
 
 enum scene_state
 {
-
     SCENE_STATE_PAUSED,
     SCENE_STATE_NORMAL,
     SCENE_STATE_SHARDS
-
 };
 
 enum game_state
 {
-
     GAME_STATE_IDLE,
     GAME_STATE_LOST,
     GAME_STATE_WON
-
 };
 
 typedef struct _scene_t
 {
-
     enum scene_state state;
     enum game_state  game_state;
 
@@ -51,7 +48,6 @@ typedef struct _scene_t
 
     float dist_passed;
     float dist_per_sec;
-
 } scene_t;
 
 void scene_init(void);
@@ -82,7 +78,6 @@ scene_t scn;
 
 void scene_init()
 {
-
     bus_subscribe(
 	"UI",
 	scene_onmessage);
@@ -109,7 +104,6 @@ void scene_init()
 
 void scene_free()
 {
-
     REL(scn.sparks);
     REL(scn.clouds);
     REL(scn.shards);
@@ -123,7 +117,6 @@ void scene_free()
 
 void scene_reset()
 {
-
     vec_reset(
 	scn.sparks);
 
@@ -175,7 +168,6 @@ void scene_set_game_state(enum game_state state)
 
 void scene_updatescale()
 {
-
     float scale = 1.0;
 
     float wthratio =
@@ -209,7 +201,6 @@ void scene_updatescale()
 
 void scene_updateperspective()
 {
-
     // calculate plane distance from focus point with simple trigonometry
 
     float camera_fov_y = M_PI / 4.0;
@@ -238,7 +229,6 @@ void scene_updateperspective()
 
 void scene_updateprojection(int32_t delta)
 {
-
     if (scn.rotate == 1 && delta > 0)
     {
 	scn.base_angle -= ((float) delta / 6000.0);
@@ -269,7 +259,6 @@ void scene_updateprojection(int32_t delta)
 
 void scene_convert_voxels_to_shards(vec_t* voxels)
 {
-
     for (int index = 0;
 	 index < voxels->length;
 	 index++)
@@ -290,7 +279,6 @@ void scene_convert_voxels_to_shards(vec_t* voxels)
 
 void scene_createshards()
 {
-
     vec_t* temp = VNEW();
     vec_add_in_vector(temp, scn.voxels);
     vec_reset(scn.voxels);
@@ -302,7 +290,6 @@ void scene_createshards()
 
 void scene_step_shards(int32_t delta)
 {
-
     float ratio = (float) delta / 50.0;
 
     for (int index = 0;
@@ -320,7 +307,6 @@ void scene_step_shards(int32_t delta)
 
 void scene_create_spark(ant_t* ant)
 {
-
     v3_t direction = {-0.5 + (float) (rand() % 100) / 100.0, -0.5 + (float) (rand() % 100) / 100.0, 4.0 + (float) (rand() % 20) / 10.0};
 
     uint32_t color    = ant->color;
@@ -342,12 +328,10 @@ void scene_create_spark(ant_t* ant)
 
 void scene_update_sparks(float distance)
 {
-
     for (int index = 0;
 	 index < scn.sparks->length;
 	 index++)
     {
-
 	particle_t* spark = scn.sparks->data[index];
 
 	spark->model->model.x += spark->dir.x;
@@ -382,7 +366,6 @@ void scene_update_sparks(float distance)
 
 void scene_createclouds()
 {
-
     uint32_t color = defaults.cloudcolor;
 
     for (int index = 0; index < 20; index++)
@@ -406,12 +389,10 @@ void scene_createclouds()
 
 void scene_update_clouds(float distance)
 {
-
     for (int index = 0;
 	 index < scn.clouds->length;
 	 index++)
     {
-
 	particle_t* cloud = scn.clouds->data[index];
 
 	cloud->model->model.x -= cloud->dir.x * distance;
@@ -426,7 +407,6 @@ void scene_update_clouds(float distance)
 
 void scene_create_ant(ant_t* ant)
 {
-
     ant_t* newant = ant_create(ant, ant->pos.x, ant->pos.y, ant->color);
 
     VADD(scn.births, newant);
@@ -436,7 +416,6 @@ void scene_create_ant(ant_t* ant)
 
 void scene_update_ants(float dist_per_iter, char turn_after_step, uint32_t ticks)
 {
-
     char game_won  = 1;
     char game_lost = 1;
 
@@ -444,7 +423,6 @@ void scene_update_ants(float dist_per_iter, char turn_after_step, uint32_t ticks
 	 index < grid.ants->length;
 	 index++)
     {
-
 	ant_t* ant = grid.ants->data[index];
 
 	ant_step(ant, dist_per_iter);
@@ -534,12 +512,10 @@ void scene_update_ants(float dist_per_iter, char turn_after_step, uint32_t ticks
 
 void scene_update_food()
 {
-
     for (int index = 0;
 	 index < grid.food->length;
 	 index++)
     {
-
 	food_t* food = grid.food->data[index];
 	if (food->state == FOOD_STATE_EATEN)
 	{
@@ -549,7 +525,6 @@ void scene_update_food()
 
     if (scn.litter->length > 0)
     {
-
 	for (int index = 0;
 	     index < scn.litter->length;
 	     index++)
@@ -565,10 +540,8 @@ void scene_update_food()
 
 void scene_step_normal(float dist_to_step)
 {
-
     do
     {
-
 	char turn_after_step = 0;
 
 	float dist_per_iter = dist_to_step;
@@ -597,7 +570,6 @@ void scene_step_normal(float dist_to_step)
 
 void scene_upload(int32_t delta)
 {
-
     if (fabs(scn.curr_angle - scn.base_angle) > 0.0001 ||
 	fabs(scn.curr_trans - scn.base_trans) > 0.0001)
     {
@@ -628,7 +600,6 @@ void scene_upload(int32_t delta)
 
 void scene_update(void* data)
 {
-
     uint32_t ticks = *(uint32_t*) data;
 
     // avoid first iteration ( ticks == 0 ) or type overflow
@@ -650,7 +621,6 @@ void scene_update(void* data)
 
 void scene_touchdown(void* data)
 {
-
     v2_t target = control_touchdown(data, scn.mat_proj);
 
     if (target.x != FLT_MAX)
@@ -666,7 +636,6 @@ void scene_touchdown(void* data)
 
 void scene_touchup(void* data)
 {
-
     v4_t area = control_touchup(data, scn.mat_proj);
 
     if (area.x != FLT_MAX)
@@ -694,7 +663,6 @@ void scene_touchup(void* data)
 
 void scene_load(void* data)
 {
-
     int level = *((int*) data);
 
     grid_reset();
@@ -723,7 +691,6 @@ void scene_load(void* data)
 
 void scene_start()
 {
-
     scn.base_trans = 20.0;
     if (defaults.depth_on == 1) scn.base_trans = 120.0;
 
@@ -732,14 +699,12 @@ void scene_start()
 
 void scene_set_speed(void* data)
 {
-
     float speed      = *(float*) data;
     scn.dist_per_sec = speed * 400.0;
 }
 
 void scene_resize()
 {
-
     scene_updatescale();
     scene_updateperspective();
     scene_updateprojection(0);
@@ -747,20 +712,17 @@ void scene_resize()
 
 void scene_switchpers()
 {
-
     scn.base_angle = defaults.depth_on == 1 ? -M_PI / 6 : 0;
     scn.rotate     = defaults.depth_on == 1 ? 1 : 0;
 }
 
 void scene_reset_time()
 {
-
     scn.ticks = 0;
 }
 
 void scene_onmessage(const char* name, void* data)
 {
-
     if (strcmp(name, "UPDATE") == 0) scene_update(data);
     else if (strcmp(name, "TOUCHDOWN") == 0) scene_touchdown(data);
     else if (strcmp(name, "TOUCHMOVE") == 0) control_touchmove(data, scn.mat_proj);

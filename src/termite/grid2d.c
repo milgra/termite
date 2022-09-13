@@ -1,3 +1,4 @@
+/* Abstract grid for path finding, etc */
 
 #ifndef grid2d_h
 #define grid2d_h
@@ -33,7 +34,6 @@ char grid2d_has_wall_inbetween(vec_t* nodes, int x0, int y0, int x1, int y1, int
 
 char grid2d_has_wall_inbetween(vec_t* nodes, int x0, int y0, int x1, int y1, int cols, int rows)
 {
-
     // http://playtechs.blogspot.com/2007/03/raytracing-on-grid.html
 
     int dx = abs(x1 - x0);
@@ -74,11 +74,10 @@ char grid2d_has_wall_inbetween(vec_t* nodes, int x0, int y0, int x1, int y1, int
     return 0;
 }
 
-// adds node to openlist keeping f order
+/* adds node to openlist keeping f order */
 
 void grid2d_insertnode(vec_t* openList, grid2d_node_t* node)
 {
-
     char added = 0;
     for (int i = 0; i < openList->length; i++)
     {
@@ -123,7 +122,6 @@ void grid2d_find(vec_t* nodes, vec_t* result, int cols, int rows, int start, int
 
     while (openList->length > 0)
     {
-
 	// pop the position of node which has the minimum `f` value.
 	grid2d_node_t* node = vec_tail(openList);
 	vec_rem_at_index(openList, openList->length - 1);

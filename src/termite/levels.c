@@ -1002,10 +1002,8 @@ void levels_load(int level)
 
     for (int row = 0; row < rows; row++)
     {
-
 	for (int col = 0; col < cols; col++)
 	{
-
 	    gblock_t* gblock = gblocks->data[row * cols + col];
 
 	    block_t* block = block_alloc();

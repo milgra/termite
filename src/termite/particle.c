@@ -1,3 +1,4 @@
+/* Particle for effects */
 
 #ifndef particle_h
 #define particle_h

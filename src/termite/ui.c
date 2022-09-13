@@ -1,4 +1,4 @@
-//  Created by Milan Toth on 2018. 01. 19.
+/* UI handler */
 
 #ifndef ui_h
 #define ui_h
@@ -28,7 +28,6 @@ void ui_free(void);
 
 typedef enum
 {
-
     UISTATE_MAIN,
     UISTATE_GRID_A,
     UISTATE_GRID_B,
@@ -37,12 +36,10 @@ typedef enum
     UISTATE_GAME,
     UISTATE_LOST,
     UISTATE_WON
-
 } uistate;
 
 struct _ui
 {
-
     uistate state;
 
     vec_t* names;
@@ -66,7 +63,6 @@ struct _ui
 
 void ui_add_button(char* label, float x, float y, float width, float height, uint32_t textcolor, uint32_t backcolor, float pixelsize)
 {
-
     char*  string;
     vec_t* button;
 
@@ -86,7 +82,6 @@ void ui_add_button(char* label, float x, float y, float width, float height, uin
 
 void ui_generate_background()
 {
-
     uint32_t color = 0;
 
     voxel_t* voxel = HEAP(((voxel_t){
@@ -110,7 +105,6 @@ void ui_generate_background()
 
 void ui_generate_header()
 {
-
     v2_t itemasize = {0};
     v2_t itembsize = {0};
     v2_t itemcsize = {0};
@@ -125,22 +119,19 @@ void ui_generate_header()
 
     itemcsize = pixeltext_calcsize(TERMITE_VERSION, 5.0);
 
-    ui_add_button(TERMITE_VERSION, (itemasize.x - itemcsize.x) / -2.0 + 4 * MARGIN,
-#if defined(IOS) || defined(ANDROID)
-		  -HTH + itemcsize.y + 2 * MARGIN,
-#else
-		  -HTH + 4 * itemcsize.y,
-#endif
-		  itemcsize.x + 2 * MARGIN,
-		  itemcsize.y + 2 * MARGIN,
-		  defaults.textcolor_a,
-		  defaults.buttoncolor_a,
-		  5.0);
+    ui_add_button(
+	TERMITE_VERSION,
+	(itemasize.x - itemcsize.x) / -2.0 + 4 * MARGIN,
+	-HTH + 4 * itemcsize.y,
+	itemcsize.x + 2 * MARGIN,
+	itemcsize.y + 2 * MARGIN,
+	defaults.textcolor_a,
+	defaults.buttoncolor_a,
+	5.0);
 }
 
 void ui_generate_menu(vec_t* items)
 {
-
     ui_generate_background();
 
     str_t* item;
@@ -153,7 +144,6 @@ void ui_generate_menu(vec_t* items)
 	 index < items->length;
 	 index++)
     {
-
 	item  = items->data[index];
 	label = str_new_cstring(item);
 
@@ -188,7 +178,6 @@ char* starttext[] = {
 
 void ui_generate_info(char** items, int count)
 {
-
     ui_generate_background();
 
     char* label;
@@ -202,7 +191,6 @@ void ui_generate_info(char** items, int count)
 	 index < count;
 	 index++)
     {
-
 	label = items[index];
 
 	itemsize = pixeltext_calcsize(label, size);
@@ -220,7 +208,6 @@ void ui_generate_info(char** items, int count)
 
 void ui_generate_toolbar()
 {
-
     v2_t     itemsize;
     uint32_t color;
 
@@ -260,7 +247,6 @@ void ui_generate_toolbar()
 
 void ui_generate_level_selector(vec_t* voxels, vec_t* names, vec_t* buttons, int startindex)
 {
-
     v2_t  itemsize = {0};
     int   counter;
     char  text[10];
@@ -303,12 +289,10 @@ void ui_generate_level_selector(vec_t* voxels, vec_t* names, vec_t* buttons, int
 
     if (startindex == 0)
     {
-
 	ui_add_button(">", start + 4.0 * size, start - 3.0 * size, itemsize.x + 2 * MARGIN, itemsize.y + 2 * MARGIN, defaults.textcolor_a, defaults.buttoncolor_a, textsize);
     }
     else
     {
-
 	ui_add_button("<", start - size + 10.0, start - 3.0 * size, itemsize.x + 2 * MARGIN, itemsize.y + 2 * MARGIN, defaults.textcolor_a, defaults.buttoncolor_a, textsize);
     }
 
@@ -319,7 +303,6 @@ void ui_generate_level_selector(vec_t* voxels, vec_t* names, vec_t* buttons, int
 
 void ui_updateui()
 {
-
     renderdata_t data =
 	{
 	    .projection = ui.mat_proj,
@@ -331,7 +314,6 @@ void ui_updateui()
 
 void ui_updatescale()
 {
-
     float scale = 0.5;
 
     float wthratio   = ui.screen.x / WTH;
@@ -348,7 +330,6 @@ void ui_updatescale()
 
 void ui_updateperspective()
 {
-
     float camera_fov_y = M_PI / 4.0;
     float camera_eye_z = (ui.screen.y / 2.0) / (tanf(camera_fov_y / 2.0));
 
@@ -365,7 +346,6 @@ void ui_updateperspective()
 
 void ui_updateprojection()
 {
-
     ui.curr_angle += (ui.base_angle - ui.curr_angle) / 20.0;
 
     m4_t angle_matrix = m4_defaultrotation(ui.curr_angle, 0.0, 0.0);
@@ -376,14 +356,12 @@ void ui_updateprojection()
 
     if (ui.state != UISTATE_GAME)
     {
-
 	// translate contents to vertical center
 
 	trans_matrix = m4_defaulttranslation(0.0, HTH / 2.0, 0.0);
     }
     else
     {
-
 	// translate contents to bottom
 
 	float from_top = (ui.screen.y - HTH * ui.base_scale);
@@ -405,17 +383,13 @@ void ui_updateprojection()
 
 void ui_generate_main_menu(char* menuitem)
 {
-
     vec_t* mainitems = VNEW();
 
     if (menuitem == NULL)
     {
 	VADDR(mainitems, str_frombytes("PLAY"));
 	VADDR(mainitems, str_frombytes("OPTIONS"));
-	if (defaults.prices_arrived == 1) VADDR(mainitems, str_frombytes("DONATE"));
-#if !defined(IOS) && !defined(ANDROID)
 	VADDR(mainitems, str_frombytes("EXIT"));
-#endif
     }
     else if (strcmp(menuitem, "PLAY") == 0)
     {
@@ -428,31 +402,8 @@ void ui_generate_main_menu(char* menuitem)
 	VADDR(mainitems, str_frombytes("2D/3D"));
 	VADDR(mainitems, str_frombytes("COLOR"));
 	VADDR(mainitems, str_frombytes("EFFECTS"));
-#if !defined(IOS) && !defined(ANDROID)
 	VADDR(mainitems, str_frombytes("FULLSCREEN"));
-#endif
-	VADDR(mainitems, str_frombytes("FEEDBACK"));
-	VADDR(mainitems, str_frombytes("BACK"));
-    }
-    else if (strcmp(menuitem, "DONATE") == 0)
-    {
-	for (int index = 0; index < 3; index++)
-	{
-	    VADDR(mainitems, str_frombytes(defaults.prices[index]));
-	}
-	VADDR(mainitems, str_frombytes("BACK"));
-    }
-    else if (strcmp(menuitem, "THANKS") == 0)
-    {
-	VADDR(mainitems, str_frombytes("THANK YOU!!!"));
-	VADDR(mainitems, str_frombytes("BACK"));
-    }
-    else if (strcmp(menuitem, "PLSGIVE") == 0)
-    {
-	VADDR(mainitems, str_frombytes("TO PLAY"));
-	VADDR(mainitems, str_frombytes("LEVEL 22-32"));
-	VADDR(mainitems, str_frombytes("PLEASE DONATE"));
-	VADDR(mainitems, str_frombytes(""));
+	VADDR(mainitems, str_frombytes("BUY ME A COFFEE"));
 	VADDR(mainitems, str_frombytes("BACK"));
     }
 
@@ -464,13 +415,11 @@ void ui_generate_main_menu(char* menuitem)
 
 void ui_generate_grid(int from)
 {
-
     ui_generate_level_selector(ui.voxels, ui.names, ui.buttons, from);
 }
 
 void ui_changestate(uistate state, char* menuitem)
 {
-
     vec_reset(ui.voxels);
     vec_reset(ui.names);
     vec_reset(ui.buttons);
@@ -493,7 +442,6 @@ void ui_changestate(uistate state, char* menuitem)
 
 void ui_loadlevel(int level)
 {
-
     if (level < 0) level = 0;
     if (level > 32) level = 32;
 
@@ -504,7 +452,6 @@ void ui_loadlevel(int level)
 
 void ui_handle_gridbutton(char* name)
 {
-
     if (name[0] == '>') ui_changestate(UISTATE_GRID_B, NULL);
     else if (name[0] == '<') ui_changestate(UISTATE_GRID_A, NULL);
     else if (strcmp(name, "RESET STATE") == 0)
@@ -515,7 +462,6 @@ void ui_handle_gridbutton(char* name)
     }
     else
     {
-
 	int level = atoi(name);
 	if (level == 1) ui_changestate(UISTATE_HELP, NULL);
 	else
@@ -524,19 +470,10 @@ void ui_handle_gridbutton(char* name)
 
 	    if (level <= defaults.highest_level)
 	    {
-		// ask for donation
-		if (defaults.donation_arrived == 0 && level > 21)
-		{
+		ui_loadlevel(level);
 
-		    ui_changestate(UISTATE_MAIN, "PLSGIVE");
-		}
-		else
-		{
-
-		    ui_loadlevel(level);
-		    if (level == 32) ui_changestate(UISTATE_GAME, NULL);
-		    else ui_changestate(UISTATE_START, NULL);
-		}
+		if (level == 32) ui_changestate(UISTATE_GAME, NULL);
+		else ui_changestate(UISTATE_START, NULL);
 	    }
 	}
     }
@@ -544,36 +481,25 @@ void ui_handle_gridbutton(char* name)
 
 void ui_handle_mainbutton(char* name)
 {
-
     if (strcmp(name, "BY MILAN TOTH") == 0) bus_notify("UI", "HOMEPAGE", NULL);
 
     else if (strcmp(name, "PLAY") == 0) ui_changestate(UISTATE_MAIN, "PLAY");
     else if (strcmp(name, "OPTIONS") == 0) ui_changestate(UISTATE_MAIN, "OPTIONS");
-    else if (strcmp(name, "DONATE") == 0)
-    {
-#ifdef RASPBERRY
-	bus_notify("UI", "DONATE", name);
-#else
-	ui_changestate(UISTATE_MAIN, "DONATE");
-#endif
-    }
+    else if (strcmp(name, "BUY ME A COFFEE") == 0) bus_notify("UI", "DONATE", NULL);
     else if (strcmp(name, "EXIT") == 0) bus_notify("UI", "EXIT", NULL);
 
     else if (strcmp(name, "TOURNAMENT") == 0) ui_changestate(UISTATE_GRID_A, NULL);
     else if (strcmp(name, "RANDOM") == 0)
     {
-
 	ui_changestate(UISTATE_START, NULL);
 	defaults.current_level = -1;
 	bus_notify("UI", "LOAD", &defaults.current_level);
     }
     else if (strcmp(name, "BACK") == 0) ui_changestate(UISTATE_MAIN, NULL);
 
-    else if (strcmp(name, "FEEDBACK") == 0) bus_notify("UI", "FEEDBACK", NULL);
     else if (strcmp(name, "FULLSCREEN") == 0) bus_notify("UI", "FULLSCREEN", NULL);
     else if (strcmp(name, "2D/3D") == 0)
     {
-
 	defaults.depth_on = 1 - defaults.depth_on;
 	defaults_save();
 
@@ -583,7 +509,6 @@ void ui_handle_mainbutton(char* name)
     }
     else if (strcmp(name, "COLOR") == 0)
     {
-
 	if (defaults.dark_on == 1) defaults_setbrighttheme();
 	else defaults_setdarktheme();
 	defaults_save();
@@ -595,7 +520,6 @@ void ui_handle_mainbutton(char* name)
     }
     else if (strcmp(name, "EFFECTS") == 0)
     {
-
 	defaults.effects_level += 1;
 	if (defaults.effects_level == 3) defaults.effects_level = 0;
 	defaults_save();
@@ -604,22 +528,10 @@ void ui_handle_mainbutton(char* name)
 
 	ui_updateprojection();
     }
-    else if (defaults.prices_arrived == 1)
-    {
-	for (int index = 0; index < 3; index++)
-	{
-	    if (strcmp(defaults.prices[index], name) == 0)
-	    {
-		bus_notify("UI", "DONATE", name);
-		ui_changestate(UISTATE_MAIN, "THANKS");
-	    }
-	}
-    }
 }
 
 void ui_handle_otherbutton(char* name)
 {
-
     if (strcmp(name, "MENU") == 0) // from game state
     {
 	ui_changestate(UISTATE_MAIN, NULL);
@@ -635,15 +547,9 @@ void ui_handle_otherbutton(char* name)
 	if (defaults.current_level == -1) ui_changestate(UISTATE_MAIN, NULL);
 	else
 	{
-
 	    ui_loadlevel(defaults.current_level + 1);
 
-	    if (defaults.donation_arrived == 0 && defaults.current_level > 21)
-	    {
-		// ask for donation
-		ui_changestate(UISTATE_MAIN, "PLSGIVE");
-	    }
-	    else if (defaults.current_level == 32) ui_changestate(UISTATE_GAME, NULL);
+	    if (defaults.current_level == 32) ui_changestate(UISTATE_GAME, NULL);
 	    else ui_changestate(UISTATE_START, NULL);
 	}
     }
@@ -669,7 +575,6 @@ void ui_handle_otherbutton(char* name)
 
 void ui_buttonpressed(char* name)
 {
-
     if (ui.state == UISTATE_MAIN) ui_handle_mainbutton(name);
     else if (ui.state == UISTATE_GRID_A) ui_handle_gridbutton(name);
     else if (ui.state == UISTATE_GRID_B) ui_handle_gridbutton(name);
@@ -678,7 +583,6 @@ void ui_buttonpressed(char* name)
 
 void ui_buttonmoved(char* name, v2_t local)
 {
-
     if (strcmp(name, "SPEED") == 0)
     {
 	float half = ui.sldbtn->model.w / 2.0;
@@ -697,7 +601,6 @@ void ui_buttonmoved(char* name, v2_t local)
 
 char* ui_getpushedbutton(void* data, v2_t* local)
 {
-
     v2_t screenpt = *(v2_t*) data;
 
     vec_t* items = ui.buttons;
@@ -735,7 +638,6 @@ char* ui_getpushedbutton(void* data, v2_t* local)
 
 void ui_onmessage(const char* name, void* data)
 {
-
     if (strcmp(name, "UPDATE") == 0)
     {
 
@@ -776,14 +678,6 @@ void ui_onmessage(const char* name, void* data)
 
 	if (ui.state == UISTATE_MAIN) ui_loadlevel(0);
     }
-    else if (strcmp(name, "SHOWDONATION") == 0)
-    {
-
-	if (ui.state == UISTATE_MAIN)
-	{
-	    ui_changestate(UISTATE_MAIN, NULL);
-	}
-    }
     else if (strcmp(name, "LOST") == 0)
     {
 	ui_changestate(UISTATE_LOST, NULL);
@@ -803,7 +697,6 @@ void ui_onmessage(const char* name, void* data)
 
 void ui_init()
 {
-
     bus_subscribe("CTL", ui_onmessage);
     bus_subscribe("SCN", ui_onmessage);
 
@@ -819,7 +712,6 @@ void ui_init()
 
 void ui_free()
 {
-
     bus_unsubscribe("CTL", ui_onmessage);
     bus_unsubscribe("SCN", ui_onmessage);
 

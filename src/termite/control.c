@@ -1,10 +1,4 @@
-//
-//  control.c
-//  Swarm
-//
-//  Created by Milan Toth on 2018. 09. 08..
-//  Copyright © 2018. milgra. All rights reserved.
-//
+/* Control layer */
 
 #ifndef control_h
     #define control_h

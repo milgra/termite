@@ -1,3 +1,4 @@
+/* Settings and defaults */
 
 #ifndef defaults_h
 #define defaults_h
@@ -53,10 +54,6 @@ typedef struct _defaults_t
     v2_t  display_size;
     float text_scale;
 
-    char donation_arrived; // purchased items arrived from stores
-    char prices_arrived;   // prices arrived from stores
-    char prices[3][100];
-
 } defaults_t;
 
 extern defaults_t defaults;
@@ -110,28 +107,20 @@ void defaults_setbrighttheme()
 
 void defaults_init()
 {
-
     int inited = settings_getint("initialized");
 
     if (inited == 0)
     {
 	settings_setint("initialized", 1);
-	settings_setint("donation_arrived", 0);
 
-	defaults.highest_level    = 1;
-	defaults.effects_level    = 2;
-	defaults.donation_arrived = 0;
-
-#ifdef RASPBERRY
-	defaults.effects_level = 0;
-#endif
+	defaults.highest_level = 1;
+	defaults.effects_level = 2;
     }
     else
     {
 
-	defaults.highest_level    = settings_getint("highest_level");
-	defaults.effects_level    = settings_getint("effects_level");
-	defaults.donation_arrived = settings_getint("donation_arrived");
+	defaults.highest_level = settings_getint("highest_level");
+	defaults.effects_level = settings_getint("effects_level");
     }
 
     defaults.dark_on  = 1 - settings_getint("dark_on");
@@ -171,8 +160,6 @@ void defaults_save()
 
     settings_setint("effects_level", defaults.effects_level);
     settings_setint("highest_level", defaults.highest_level);
-
-    settings_setint("donation_arrived", defaults.donation_arrived);
 }
 
 #endif

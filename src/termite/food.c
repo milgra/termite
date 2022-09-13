@@ -1,3 +1,4 @@
+/* Food entity */
 
 #ifndef food_h
 #define food_h
@@ -7,23 +8,19 @@
 
 enum food_state
 {
-
     FOOD_STATE_NORMAL,
     FOOD_STATE_TAKEN,
     FOOD_STATE_EATEN
-
 };
 
 typedef struct _food_t
 {
-
     char            id[10];
     enum food_state state;
     float           mass;
 
     v2_t     pos;
     voxel_t* model;
-
 } food_t;
 
 food_t* food_create(float x, float y, uint32_t color);
@@ -38,14 +35,12 @@ void    food_set_model_pos(food_t* food, float x, float y);
 
 void food_dealloc(void* pointer)
 {
-
     food_t* food = pointer;
     REL(food->model);
 }
 
 food_t* food_create(float x, float y, uint32_t color)
 {
-
     food_t* food = CAL(sizeof(food_t), food_dealloc, NULL);
 
     sprintf(food->id, "%i_%i", (int) (y / defaults.grid_size), (int) (x / defaults.grid_size));
@@ -66,7 +61,6 @@ food_t* food_create(float x, float y, uint32_t color)
 
 void food_set_state(food_t* food, enum food_state state)
 {
-
     char* text = "";
 
     switch (food->state)
@@ -84,7 +78,6 @@ void food_set_state(food_t* food, enum food_state state)
 
 void food_set_model_pos(food_t* food, float x, float y)
 {
-
     food->model->model.x = x;
     food->model->model.y = y;
 }

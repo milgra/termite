@@ -1,31 +1,18 @@
+/* OpenGL renderer */
+
 #ifndef renderer_h
 #define renderer_h
 
-#ifdef IOS
-    #import <OpenGLES/ES2/gl.h>
-    #import <OpenGLES/ES2/glext.h>
-#elif defined OSX
-    #include <OpenGL/gl3.h>
-    #include <OpenGL/gl3ext.h>
-#elif defined ANDROID
-    #include <EGL/egl.h>
-    #include <GLES/gl.h>
-#elif defined __linux__
-    #include "GL/glew.h"
-    #include <GL/gl.h>
-    #include <GL/glu.h>
-#elif defined ASMJS
-    #include <GLES2/gl2.h>
-    #include <GLES2/gl2ext.h>
-#elif defined WINDOWS
-    #define GLEW_STATIC
-    #include "GL/glew.h"
-#endif
+#include <stdint.h>
+
+#include "GL/glew.h"
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #include "defaults.c"
 #include "zc_mat4.c"
 #include "zc_vector.c"
-#include <stdint.h>
 
 typedef struct _renderdata_t
 {
@@ -49,49 +36,24 @@ void renderer_free(void);
 #include "zc_cstring.c"
 #include <float.h>
 
-#if defined(IOS) || defined(ANDROID) || defined(ASMJS)
-
 char* glow_vsh =
-    #include "shaders/glow_es.vsh"
+#include "shaders/glow.vsh"
     ;
 char* glow_fsh =
-    #include "shaders/glow_es.fsh"
+#include "shaders/glow.fsh"
     ;
 char* blur_vsh =
-    #include "shaders/blur_es.vsh"
+#include "shaders/blur.vsh"
     ;
 char* blur_fsh =
-    #include "shaders/blur_es.fsh"
+#include "shaders/blur.fsh"
     ;
 char* blend_vsh =
-    #include "shaders/blend_es.vsh"
+#include "shaders/blend.vsh"
     ;
 char* blend_fsh =
-    #include "shaders/blend_es.fsh"
+#include "shaders/blend.fsh"
     ;
-
-#else
-
-char* glow_vsh =
-    #include "shaders/glow.vsh"
-    ;
-char* glow_fsh =
-    #include "shaders/glow.fsh"
-    ;
-char* blur_vsh =
-    #include "shaders/blur.vsh"
-    ;
-char* blur_fsh =
-    #include "shaders/blur.fsh"
-    ;
-char* blend_vsh =
-    #include "shaders/blend.vsh"
-    ;
-char* blend_fsh =
-    #include "shaders/blend.fsh"
-    ;
-
-#endif
 
 const char* uniforms_game[]   = {"2", "projection", "lightmap"};
 const char* attributes_game[] = {"2", "position", "color"};
@@ -107,7 +69,6 @@ void renderer_update_buffer(GLfloat* vertexes, uint32_t count, m4_t projection, 
 
 struct renderer_t
 {
-
     GLuint shader_glow;
     GLuint shader_blur;
     GLuint shader_blend;
@@ -141,7 +102,6 @@ struct renderer_t
     m4_t     projections[32];
 
     floatbuffer_t* dynamicbuffer;
-
 } rnd;
 
 void renderer_delete_framebuffers()
@@ -170,7 +130,6 @@ void renderer_create_framebuffers()
 
 void renderer_init(GLuint defFrameBuffer, GLuint defRenderBuffer, char* resources)
 {
-
     bus_subscribe("CTL", renderer_onmessage);
     bus_subscribe("SCN", renderer_onmessage);
     bus_subscribe("UI", renderer_onmessage);
@@ -202,7 +161,6 @@ void renderer_free()
 
 void renderer_update_buffer(GLfloat* vertexes, uint32_t count, m4_t projection, int level)
 {
-
     if (rnd.vbos[level] == 0)
     {
 	GLuint name;
@@ -230,7 +188,6 @@ void renderer_update_matrix(m4_t projection, int level)
 
 void renderer_draw_unit_quad()
 {
-
     GLfloat vertexes[] = {
 
 	-1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f
@@ -248,7 +205,6 @@ void renderer_draw_unit_quad()
 
 void renderer_render_scene(int* levelmap, int* drawmap)
 {
-
     for (int index = 0;
 	 index < levelmap[0];
 	 index++)
@@ -413,7 +369,6 @@ void renderer_render()
 
 void renderer_uploadvoxels(void* data)
 {
-
     floatbuffer_reset(rnd.dynamicbuffer);
 
     renderdata_t* rdata = data;

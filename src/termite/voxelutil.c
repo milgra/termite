@@ -1,3 +1,4 @@
+/* Voxel generator */
 
 #ifndef voxeltext_h
 #define voxeltext_h
@@ -18,7 +19,6 @@ vec_t* voxelutil_button(char* label, float x, float y, float width, float height
 
 void voxelutil_move(vec_t* voxels, float x, float y)
 {
-
     // moves all voxels in vector with given x and y
 
     voxel_t* voxel;
@@ -36,7 +36,6 @@ void voxelutil_move(vec_t* voxels, float x, float y)
 
 void voxelutil_label(char* label, float size, uint32_t color, vec_t* voxels)
 {
-
     // asks for pixel coordinates for label
     // generates voxels based on coordinates
 
@@ -68,7 +67,6 @@ void voxelutil_label(char* label, float size, uint32_t color, vec_t* voxels)
 
 void voxelutil_buttonback(float x, float y, float width, float height, uint32_t color, vec_t* voxels)
 {
-
     // asks for size of label
     // creates a slightly bigger voxel for button surface
 

@@ -13,10 +13,9 @@ gl = cc.find_library('GL',static:false)
 glew = cc.find_library('GLEW',static:false)
 glu = cc.find_library('GLU',static:false)
 sdl = cc.find_library('SDL2',static:false)
-sdlmixer = cc.find_library('SDL2_mixer',static:false)
 pthread = cc.find_library('pthread',static:false)
 
-termite_dependencies = [math,gl,glew,sdl,sdlmixer,pthread]
+termite_dependencies = [math,gl,glew,sdl,pthread]
 
 termite_version = '"@0@"'.format(meson.project_version())
 pkg_datadir = join_paths(get_option('prefix'), get_option('datadir')) / 'termite'
@@ -26,7 +25,7 @@ add_project_arguments('-DPKG_DATADIR="' + pkg_datadir + '"',
 add_project_arguments('-Wno-unused-but-set-variable', language: 'c')
 
 if get_option('buildtype') == 'debug'
-#    add_project_arguments('-DDEBUG',language: 'c')
+    add_project_arguments('-DDEBUG',language: 'c')
 endif
 
 termite_inc = include_directories(
@@ -37,29 +36,22 @@ termite_inc = include_directories(
 	'src/modules',
 	'src/modules/core',
 	'src/modules/math',
-	'src/modules/utils')
-
+	'src/modules/utils',
+	'src/modules/voxel')
 
 com_sources = ['src/termite/ant.c',
-	       'src/termite/bridge.c',
 	       'src/termite/bus.c',
 	       'src/termite/control.c',
 	       'src/termite/defaults.c',
-	       'src/termite/file.c',
-       	       'src/termite/floatbuffer.c',	
 	       'src/termite/food.c',
 	       'src/termite/grid.c',
 	       'src/termite/grid2d.c',
 	       'src/termite/levels.c',
 	       'src/termite/main.c',
-	       'src/termite/ogl.c',
 	       'src/termite/particle.c',
 	       'src/termite/pixeltext.c',
-	       'src/termite/renderer.c',
-	       'src/termite/settings.c',
 	       'src/termite/scene.c',
 	       'src/termite/ui.c',
-	       'src/termite/voxel.c',
 	       'src/termite/voxelutil.c',
 
 	       'src/modules/core/zc_cstring.c',
@@ -77,6 +69,13 @@ com_sources = ['src/termite/ant.c',
 	       'src/modules/math/zc_util3.c',
 	       'src/modules/math/zc_vec4.c',
 	       'src/modules/math/zc_mat4.c',
+
+	       'src/modules/voxel/file.c',
+       	       'src/modules/voxel/floatbuffer.c',	
+	       'src/modules/voxel/ogl.c',
+	       'src/modules/voxel/renderer.c',
+	       'src/modules/voxel/settings.c',
+	       'src/modules/voxel/voxel.c',
 
 	       'src/modules/utils/str_util.c']
 

@@ -1,3 +1,4 @@
+/* Ant antity :) */
 
 #ifndef ant_h
 #define ant_h
@@ -7,7 +8,6 @@
 
 enum ant_state
 {
-
     ST_SEARCH,
     ST_WALKPATH,
     ST_TOENEMY,
@@ -17,7 +17,6 @@ enum ant_state
     ST_DEAD,
     ST_WAIT,
     ST_QUEEN
-
 };
 
 typedef struct _ant_t
@@ -71,18 +70,15 @@ void   ant_cleanup(ant_t* ant);
 #include "defaults.c"
 #include <stdio.h>
 
-uint32_t col_yellow[8] =
-    {
-	0xFFFF00FF,
-	0xFFFF00FF,
-	0xFFFF00FF,
-	0xFFFF00FF,
-	0xFFFF00FF,
-	0xFFFF00FF,
-	0xFFFF00FF,
-	0xFFFF00FF
-
-};
+uint32_t col_yellow[8] = {
+    0xFFFF00FF,
+    0xFFFF00FF,
+    0xFFFF00FF,
+    0xFFFF00FF,
+    0xFFFF00FF,
+    0xFFFF00FF,
+    0xFFFF00FF,
+    0xFFFF00FF};
 
 void ant_free(void* pointer)
 {
@@ -186,7 +182,6 @@ ant_t* ant_create(ant_t* queen, float x, float y, uint32_t color)
 
 void ant_dropfood(ant_t* ant)
 {
-
     // TODO block kezeles scenebol kene tortenjen
 
     food_set_state(ant->food_taken, FOOD_STATE_NORMAL);
@@ -205,7 +200,6 @@ void ant_dropfood(ant_t* ant)
 
 void ant_takehit(ant_t* ant, ant_t* attacker, float hit)
 {
-
     if (ant->state == ST_DEAD) return;
 
     ant->energy -= hit;
@@ -265,7 +259,6 @@ void ant_takehit(ant_t* ant, ant_t* attacker, float hit)
 
 void ant_update_queen(ant_t* ant)
 {
-
     if (ant->mass >= ant->massperchild)
     {
 
@@ -276,7 +269,6 @@ void ant_update_queen(ant_t* ant)
 
 char ant_followtarget(ant_t* ant, v2_t pos, float distance)
 {
-
     float dx = (pos.x - ant->pos.x);
     float dy = (pos.y - ant->pos.y);
 
@@ -321,7 +313,6 @@ char ant_followtarget(ant_t* ant, v2_t pos, float distance)
 
 void ant_update_search(ant_t* ant, float distance)
 {
-
     ant->pos.x += cosf(ant->angle) * distance;
     ant->pos.y += sinf(ant->angle) * distance;
 
@@ -332,7 +323,6 @@ void ant_update_search(ant_t* ant, float distance)
 
     if (block == NULL || block->wall == 1)
     {
-
 	ant->pos.x -= cosf(ant->angle) * distance;
 	ant->pos.y -= sinf(ant->angle) * distance;
 	ant->model->model.x = ant->pos.x - ant->model->model.w / 2.0;
@@ -368,14 +358,12 @@ void ant_update_search(ant_t* ant, float distance)
 
 void ant_update_search_turn(ant_t* ant)
 {
-
     float step = -0.4 + (float) ((float) rand() / (float) RAND_MAX) * 0.8;
     ant->angle += step;
 }
 
 void ant_update_movetofood(ant_t* ant, float distance)
 {
-
     if (ant->food_wanted != NULL &&
 	ant->food_wanted->state == FOOD_STATE_NORMAL)
     {
@@ -442,7 +430,6 @@ void ant_update_movetofood(ant_t* ant, float distance)
 
 void ant_update_movetoenemy(ant_t* ant, float distance)
 {
-
     if (ant->enemy != NULL)
     {
 	char reached = ant_followtarget(ant, ant->enemy->pos, distance);
@@ -468,7 +455,6 @@ void ant_update_movetoenemy(ant_t* ant, float distance)
 
 void ant_update_movetoqueen(ant_t* ant, float distance)
 {
-
     if (ant->queen != NULL &&
 	ant->food_taken != NULL)
     {
@@ -542,7 +528,6 @@ void ant_update_walkpath(ant_t* ant, float distance)
 	}
 	else
 	{
-
 	    // TODO should be moved to update
 
 	    if (ant->food_taken != NULL)
@@ -572,14 +557,12 @@ void ant_update_walkpath(ant_t* ant, float distance)
     }
     else
     {
-
 	ant_set_state(ant, ST_SEARCH);
     }
 }
 
 void ant_update_fight(ant_t* ant)
 {
-
     if (ant->enemy != NULL &&
 	ant->enemy->energy > 0.0 &&
 	ant->enemy->color != ant->color)
@@ -605,13 +588,11 @@ void ant_update_fight(ant_t* ant)
 
 void ant_update_fight_turn(ant_t* ant)
 {
-
     ant_takehit(ant->enemy, ant, ((float) (rand() % 100) / 100.0) * defaults.max_hit);
 }
 
 void ant_update_wait(ant_t* ant, uint32_t ticks)
 {
-
     // ant->blinking = 1 - ant->blinking;
     if (ticks % 800 < 400)
     {
@@ -650,7 +631,6 @@ void ant_select(ant_t* ant)
 
 void ant_target(ant_t* ant, float x, float y)
 {
-
     if (ant->selected == 1)
     {
 
@@ -690,7 +670,6 @@ void ant_target(ant_t* ant, float x, float y)
 
 void ant_step(ant_t* ant, float distance)
 {
-
     if (ant->state == ST_SEARCH) ant_update_search(ant, distance);
     else if (ant->state == ST_TOFOOD) ant_update_movetofood(ant, distance);
     else if (ant->state == ST_TOENEMY) ant_update_movetoenemy(ant, distance);
@@ -701,7 +680,6 @@ void ant_step(ant_t* ant, float distance)
 
 void ant_turn(ant_t* ant, uint32_t ticks)
 {
-
     if (ant->state == ST_SEARCH) ant_update_search_turn(ant);
     else if (ant->state == ST_FIGHT) ant_update_fight_turn(ant);
     else if (ant->state == ST_WAIT) ant_update_wait(ant, ticks);
