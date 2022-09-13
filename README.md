@@ -5,8 +5,8 @@
 Termite is the ultimate psychedelic real-time action strategy experience. You are the leader of a termite hive with three objectives :
 
 - collect food  
-- produce ants  
-- destroy alien colonies  
+- Produce ants  
+- Destroy alien colonies  
 - Select groups of termits, order them to collect food or attack aliens, use the speed slider to slow down/speed up time to have more control over your ants.  
 
 With Termite you get :
@@ -21,15 +21,17 @@ The code is also suitable for learning purposes.
 ### Files
 
 ant.c - Ant antity  
-control.c - Control layer
-defaults.c - Settings and defaults
+control.c - Control layer  
+defaults.c - Settings and defaults  
 food.c - Food entity  
 grid.c - World grid  
 grid2d.c - Abstract grid for path finding, etc  
-levels.c - Level descriptions
-main.c - SDL handling, top level control
-particle.c - Particle entity for effects
-pixeltext
+levels.c - Level descriptions  
+main.c - SDL handling, top level control  
+particle.c - Particle entity for effects  
+scene.c - Scene handling
+ui.c - UI handling
+voxelutil.c - Voxel label generator
 
 ### Tech info
 
