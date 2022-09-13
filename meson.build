@@ -40,7 +40,6 @@ termite_inc = include_directories(
 	'src/modules/voxel')
 
 com_sources = ['src/termite/ant.c',
-	       'src/termite/bus.c',
 	       'src/termite/control.c',
 	       'src/termite/defaults.c',
 	       'src/termite/food.c',
@@ -76,6 +75,7 @@ com_sources = ['src/termite/ant.c',
 	       'src/modules/voxel/renderer.c',
 	       'src/modules/voxel/settings.c',
 	       'src/modules/voxel/voxel.c',
+	       'src/modules/voxel/bus.c',
 
 	       'src/modules/utils/str_util.c']
 
