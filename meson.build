@@ -13,9 +13,8 @@ gl = cc.find_library('GL',static:false)
 glew = cc.find_library('GLEW',static:false)
 glu = cc.find_library('GLU',static:false)
 sdl = cc.find_library('SDL2',static:false)
-pthread = cc.find_library('pthread',static:false)
 
-termite_dependencies = [math,gl,glew,sdl,pthread]
+termite_dependencies = [math,gl,glew,sdl]
 
 termite_version = '"@0@"'.format(meson.project_version())
 pkg_datadir = join_paths(get_option('prefix'), get_option('datadir')) / 'termite'
