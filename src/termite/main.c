@@ -13,6 +13,11 @@
 #include "zc_log.c"
 #include "zc_time.c"
 
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#endif
+
 char  quit  = 0;
 float scale = 1.0;
 
@@ -99,7 +104,6 @@ void main_init()
 
 void main_free()
 {
-
     scene_free();
     renderer_free();
     ui_free();
@@ -108,82 +112,82 @@ void main_free()
     bus_free();
 }
 
-void main_loop()
+char drag = 0;
+
+int main_loop(double time, void* userdata)
 {
-    char      drag = 0;
     SDL_Event event;
 
-    while (!quit)
+    while (SDL_PollEvent(&event) != 0)
     {
-	while (SDL_PollEvent(&event) != 0)
+	if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP || event.type == SDL_MOUSEMOTION)
 	{
-	    if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP || event.type == SDL_MOUSEMOTION)
+	    int x = 0, y = 0;
+	    SDL_GetMouseState(&x, &y);
+
+	    v2_t dimensions = {.x = x * scale, .y = y * scale};
+
+	    if (event.type == SDL_MOUSEBUTTONDOWN)
 	    {
-		int x = 0, y = 0;
-		SDL_GetMouseState(&x, &y);
-
-		v2_t dimensions = {.x = x * scale, .y = y * scale};
-
-		if (event.type == SDL_MOUSEBUTTONDOWN)
-		{
-		    drag = 1;
-		    bus_notify("CTL", "TOUCHDOWN", &dimensions);
-		}
-		else if (event.type == SDL_MOUSEBUTTONUP)
-		{
-		    drag = 0;
-		    bus_notify("CTL", "TOUCHUP", &dimensions);
-		}
-		else if (event.type == SDL_MOUSEMOTION && drag == 1)
-		{
-		    bus_notify("CTL", "TOUCHMOVE", &dimensions);
-		}
+		drag = 1;
+		bus_notify("CTL", "TOUCHDOWN", &dimensions);
 	    }
-	    else if (event.type == SDL_QUIT)
+	    else if (event.type == SDL_MOUSEBUTTONUP)
 	    {
-		quit = 1;
+		drag = 0;
+		bus_notify("CTL", "TOUCHUP", &dimensions);
 	    }
-	    else if (event.type == SDL_WINDOWEVENT)
+	    else if (event.type == SDL_MOUSEMOTION && drag == 1)
 	    {
-		if (event.window.event == SDL_WINDOWEVENT_RESIZED)
-		{
-		    width  = event.window.data1;
-		    height = event.window.data2;
-
-		    v2_t dimensions       = {.x = width * scale, .y = height * scale};
-		    defaults.display_size = dimensions;
-
-		    bus_notify("CTL", "RESIZE", &dimensions);
-		}
-	    }
-	    else if (event.type == SDL_KEYUP)
-	    {
-		switch (event.key.keysym.sym)
-		{
-		    case SDLK_f:
-			main_onmessage((char*) "FULLSCREEN", NULL);
-			break;
-
-		    case SDLK_ESCAPE:
-			main_onmessage((char*) "FULLSCREEN", NULL);
-			break;
-		}
-	    }
-	    else if (event.type == SDL_APP_WILLENTERFOREGROUND)
-	    {
-		bus_notify("CTL", "RESETTIME", NULL); // reset scene timer to avoid giant step
+		bus_notify("CTL", "TOUCHMOVE", &dimensions);
 	    }
 	}
+	else if (event.type == SDL_QUIT)
+	{
+	    quit = 1;
+	}
+	else if (event.type == SDL_WINDOWEVENT)
+	{
+	    if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+	    {
+		width  = event.window.data1;
+		height = event.window.data2;
 
-	// update simulation
+		v2_t dimensions       = {.x = width * scale, .y = height * scale};
+		defaults.display_size = dimensions;
 
-	uint32_t ticks = SDL_GetTicks();
+		bus_notify("CTL", "RESIZE", &dimensions);
+	    }
+	}
+	else if (event.type == SDL_KEYUP)
+	{
+	    switch (event.key.keysym.sym)
+	    {
+		case SDLK_f:
+		    main_onmessage((char*) "FULLSCREEN", NULL);
+		    break;
 
-	bus_notify("CTL", "UPDATE", &ticks);
-	bus_notify("CTL", "RENDER", &ticks);
-
-	SDL_GL_SwapWindow(window);
+		case SDLK_ESCAPE:
+		    main_onmessage((char*) "FULLSCREEN", NULL);
+		    break;
+	    }
+	}
+	else if (event.type == SDL_APP_WILLENTERFOREGROUND)
+	{
+	    bus_notify("CTL", "RESETTIME", NULL); // reset scene timer to avoid giant step
+	}
     }
+
+    // update simulation
+
+    uint32_t ticks = SDL_GetTicks();
+
+    bus_notify("CTL", "UPDATE", &ticks);
+    bus_notify("CTL", "RENDER", &ticks);
+
+    SDL_GL_SwapWindow(window);
+
+    return 1;
 }
 
 int main(int argc, char* argv[])
@@ -228,8 +232,10 @@ int main(int argc, char* argv[])
     {
 	// setup opengl version
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -268,9 +274,9 @@ int main(int argc, char* argv[])
 
 	    if (context != NULL)
 	    {
-
 		GLint GlewInitResult = glewInit();
-		if (GLEW_OK != GlewInitResult) zc_log_error("%s", glewGetErrorString(GlewInitResult));
+		if (GLEW_OK != GlewInitResult)
+		    zc_log_error("%s", glewGetErrorString(GlewInitResult));
 
 		// calculate scaling
 
@@ -283,29 +289,45 @@ int main(int argc, char* argv[])
 
 		// try to set up vsync
 
-		if (SDL_GL_SetSwapInterval(1) < 0) zc_log_error("SDL swap interval error %s", SDL_GetError());
+		if (SDL_GL_SetSwapInterval(1) < 0)
+		    zc_log_error("SDL swap interval error %s", SDL_GetError());
 
 		main_init();
-		main_loop();
+
+#ifdef EMSCRIPTEN
+		// setup the main thread for the browser and release thread with return
+		emscripten_request_animation_frame_loop(main_loop, 0);
+		return 0;
+#else
+		// infinite loop til quit
+		while (!quit)
+		{
+		    main_loop(0, NULL);
+		}
+#endif
+
 		main_free();
 
 		// cleanup
 
 		SDL_GL_DeleteContext(context);
 	    }
-	    else zc_log_error("SDL context creation error %s", SDL_GetError());
+	    else
+		zc_log_error("SDL context creation error %s", SDL_GetError());
 
 	    // cleanup
 
 	    SDL_DestroyWindow(window);
 	}
-	else zc_log_error("SDL window creation error %s", SDL_GetError());
+	else
+	    zc_log_error("SDL window creation error %s", SDL_GetError());
 
 	// cleanup
 
 	SDL_Quit();
     }
-    else zc_log_error("SDL init error %s", SDL_GetError());
+    else
+	zc_log_error("SDL init error %s", SDL_GetError());
 
     return 0;
 }

@@ -54,6 +54,12 @@ Beauty true beauty byerrolgarner There is no point using words to explain how gr
 
 Instant, miminalistic, strong flow experience byNavajonki1987greatapp Up front: If you’re looking for a deep plot with characters and the usual game elements this will surprise you. It’s a very simple game, but is incredibly captivating. As you progress through the different levels, you must focus simply on not loosing focus. If you’re into games like Super Hexagon and appreciate minimalistic, finely crafted games, try this out.
 
+### WebAssembly 
+
+find src -type f -name "*.c" > files.txt
+emcc -Isrc/termite -Isrc/zc_core -Isrc/zc_math -Isrc/termite/gl -I/home/milgra/Downloads/emsdk/upstream/emscripten/system/includer/emscripten.h -DPATH_MAX=255 -DTERMITE_VERSION=\"1.0\" -sUSE_SDL=2 -sMAX_WEBGL_VERSION=1 $(cat files.txt) -o termite.html
+
 ### TODO
 
 - Re-thing renderer
+
