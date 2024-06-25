@@ -15,17 +15,17 @@ char* path_new_normalize(char* path, char* execpath);
 
 #include "zc_memory.c"
 #include <limits.h>
-#ifndef EMSCRIPTEN
-#include <linux/limits.h>
+#ifdef __linux__
+    #include <linux/limits.h>
 #endif
 #include <string.h>
 
 char* path_new_append(char* root, char* component)
 {
-  if (root[strlen(root) - 1] == '/')
-    return cstr_new_format(PATH_MAX + NAME_MAX, "%s%s", root, component);
-  else
-    return cstr_new_format(PATH_MAX + NAME_MAX, "%s/%s", root, component);
+    if (root[strlen(root) - 1] == '/')
+	return cstr_new_format(PATH_MAX + NAME_MAX, "%s%s", root, component);
+    else
+	return cstr_new_format(PATH_MAX + NAME_MAX, "%s/%s", root, component);
 }
 
 char* path_new_remove_last_component(char* path)
