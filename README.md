@@ -18,6 +18,12 @@ With Termite you get :
 
 The code is also suitable for learning purposes.
 
+## Try it! ##
+
+[https://github.com/milgra/termite/releases/download/0.8/termite.app.tar.gz]
+
+Extract the archive and call termite.app/termite. It is a standalone application bundle running on all distributions.
+
 ### Files
 
 ant.c - Ant antity  
