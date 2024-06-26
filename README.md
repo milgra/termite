@@ -24,6 +24,16 @@ The code is also suitable for learning purposes.
 
 Extract the archive and call termite.app/termite. It is a standalone application bundle running on all distributions.
 
+## Build ##
+
+```
+git clone https://github.com/milgra/termite.git
+cd termite
+meson build --buildtype=release
+ninja -C build
+sudo ninja -C build install
+```
+
 ### Files
 
 ant.c - Ant antity  
